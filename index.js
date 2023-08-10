@@ -16,7 +16,7 @@ mongoose.connect()
     res.send('connection failed',err)
   })
 
-  app.use('/auth',userRoute)
+  app.use('/user/auth',userRoute)
 
 app.listen(5000, () => {
   console.log("Server started on port: 5000");
