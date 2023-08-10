@@ -8,12 +8,12 @@ const app = express();
 app.use(cors())
 app.use(bodyParser.json())
 
-mongoose.connect()
-  .then((req,res)=>{
-    res.send('connected to db')
+mongoose.connect("mongodb+srv://rajinrk:1RLdyeLz8uyvHHMh@cluster0.pt8bbn4.mongodb.net/?retryWrites=true&w=majority")
+  .then(()=>{
+    console.log('connected to db')
   })
   .catch(err=> {
-    res.send('connection failed',err)
+    console.log('connection failed',err)
   })
 
   app.use('/user/auth',userRoute)
