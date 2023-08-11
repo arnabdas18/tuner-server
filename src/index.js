@@ -12,8 +12,8 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
-app.use("/api/v1/auth", authRoutes);
-app.use("/", videoRouter);
+app.use("/api/v1/auth", userRoutes);
+app.use("/", videoRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI)
