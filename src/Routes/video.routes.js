@@ -1,11 +1,12 @@
 require("dotenv").config();
+const express = require("express");
 const VideoModel = require("../models/video.model");
 const UserModel = require("../models/user.model");
 const cloudinary = require("cloudinary").v2;
 const authMiddleware = require("../middleware/authMiddleware");
-const { multer } = require("multer");
+const multer = require("multer");
 
-const videoRoutes = Router();
+const videoRoutes = express.Router();
 
 const path = require("path");
 
