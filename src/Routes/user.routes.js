@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const userRoute = express.Router();
 
 userRoute.post("/register", async (req, res) => {
-  try {
+  
     const { name, email, phone, profession, password } = req.body;
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -19,18 +19,23 @@ userRoute.post("/register", async (req, res) => {
       profession,
     });
 
-    const result = await user.save();
+    // const result = await user.save();
 
-    res.status(201).json({
-      message: "registered successfully",
-      data: result,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: "user already registered",
-      error,
-    });
-  }
+    user.save()
+        .then((result) => {
+            res.status(201).json({
+              success : true,
+                message: 'registered succesfully',
+                data: result
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+              success : false,
+                message: 'user already registered',
+                error: err
+            })
+        })
 });
 
 userRoute.post("/login", async (req, res) => {
