@@ -16,7 +16,7 @@ app.use("/api/v1/auth", userRoutes);
 app.use("/", videoRoutes);
 
 mongoose
-  .connect("mongodb+srv://rajinrk:tCnvp5cI2g18ff1k@cluster0.pt8bbn4.mongodb.net/?retryWrites=true&w=majority")
+  .connect(process.env.MONGODB_URL)
   .then(() => {
     console.log("Successful connection to mongodb");
   })
@@ -25,6 +25,6 @@ mongoose
     console.log(err);
   });
 
-app.listen(4800, () => {
-  console.log(`Server started on port: 4800`);
+app.listen(process.env.PORT, () => {
+  console.log(`Server started on port: ${process.env.PORT}`);
 });
