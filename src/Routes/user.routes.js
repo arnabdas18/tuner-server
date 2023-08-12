@@ -25,14 +25,14 @@ userRoute.post("/register", async (req, res) => {
         .then((result) => {
             res.status(201).json({
               success : true,
-                message: 'registered succesfully',
+                message: 'Registered succesfully',
                 data: result
             })
         })
         .catch(err => {
             res.status(500).json({
               success : false,
-                message: 'user already registered',
+                message: 'User already registered',
                 error: err
             })
         })
@@ -61,7 +61,7 @@ userRoute.post("/login", async (req, res) => {
       expiresIn: "7d",
     });
     res.status(200).send({
-      message: "login successfully",
+      message: "LoggedIn successfully",
       token,
     });
   } catch (error) {
