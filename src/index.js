@@ -4,8 +4,8 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
-const userRoutes = require("./routes/user.routes");
-const videoRoutes = require("./routes/video.routes");
+const userRoutes = require("./Routes/user.routes");
+const videoRoutes = require("./Routes/video.routes");
 
 const app = express();
 app.use(bodyParser.json())
