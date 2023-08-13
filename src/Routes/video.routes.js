@@ -41,6 +41,7 @@ videoRoutes.post(
   "/create/:userId",
   storage.single("video"),
   async (req, res) => {
+    console.log(req.body)
     try {
       const { userId } = req.params;
       const currDate = getDate();
@@ -70,10 +71,10 @@ videoRoutes.post(
       user.myVideos.unshift(savedVideo._id);
       await user.save();
 
-      return res.status(201).json({ result: savedVideo });
+      return res.status(201).json({ result: savedVideo,status : true });
     } catch (err) {
       console.log(err.message);
-      return res.status(500).json({ error: err.message });
+      return res.status(500).json({ error: err.message,status : false });
     }
   }
 );
