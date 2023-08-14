@@ -8,6 +8,22 @@ const multer = require("multer");
 
 const videoRoutes = express.Router();
 
+function getDate() {
+  let today = new Date();
+  let day = today.getDate();
+  let month = today.toLocaleString("default", { month: "long" });
+  let year = today.getFullYear();
+
+  return `${day} ${month} ${year}`;
+}
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
+});
+
 const path = require("path");
 
 const storage = multer({
@@ -21,21 +37,6 @@ const storage = multer({
     cb(null, true);
   },
 });
-
-cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
-function getDate() {
-  let today = new Date();
-  let day = today.getDate();
-  let month = today.toLocaleString("default", { month: "long" });
-  let year = today.getFullYear();
-
-  return `${day} ${month} ${year}`;
-}
 
 videoRoutes.post(
   "/create/:userId",
@@ -55,8 +56,6 @@ videoRoutes.post(
           folder: "tuner",
           eager: [{ format: "jpeg", effect: "preview:duration_2" }],
           eager_async: true,
-          filename_override: req.body.title,
-          quality: 60,
         }
       );
 
@@ -65,9 +64,17 @@ videoRoutes.post(
         video: cloudinaryResponse.secure_url,
         thumbnail: cloudinaryResponse.eager[0].secure_url,
         date: currDate,
+        postedBy: userId,
       });
 
+      console.log(newVideo);
+
       const savedVideo = await newVideo.save();
+
+      const user = await UserModel.findById(userId);
+      if (!user) {
+        return res.status(404).json({ error: "User not found in Database" });
+      }
       user.myVideos.unshift(savedVideo._id);
       await user.save();
 
@@ -81,7 +88,7 @@ videoRoutes.post(
 
 videoRoutes.get("/video/search", async (req, res) => {
   try {
-    const queryString = req.query.q;
+    const query = req.query.q;
     const videos = await VideoModel.find({
       title: { $regex: query, $options: "i" },
     }).limit(40);

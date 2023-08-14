@@ -6,36 +6,33 @@ const jwt = require("jsonwebtoken");
 const userRoute = express.Router();
 
 userRoute.post("/register", async (req, res) => {
+  try {
+    const { name, email, phone, profession, password } = req.body;
 
-  const { name, email, phone, profession, password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+    const user = new userModel({
+      name,
+      email,
+      password: hashedPassword,
+      phone,
+      profession,
+    });
 
-  const user = new userModel({
-    name,
-    email,
-    password: hashedPassword,
-    phone,
-    profession,
-  });
+    const result = await user.save();
 
-
-
-  user.save()
-    .then((result) => {
-      res.status(201).json({
-        success: true,
-        message: 'Registered succesfully',
-        data: result
-      })
-    })
-    .catch(err => {
-      res.status(500).json({
-        success: false,
-        message: 'User already registered',
-        error: err
-      })
-    })
+    res.status(201).json({
+      success: true,
+      message: "Registered successfully",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "User already registered",
+      error,
+    });
+  }
 });
 
 userRoute.post("/login", async (req, res) => {
@@ -44,7 +41,7 @@ userRoute.post("/login", async (req, res) => {
 
     const user = await userModel.findOne({ email });
     if (!user) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         message: "Email is not registered",
       });
@@ -52,7 +49,7 @@ userRoute.post("/login", async (req, res) => {
 
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: "Invalid Email or Password",
       });
@@ -63,14 +60,12 @@ userRoute.post("/login", async (req, res) => {
     res.status(200).json({
       success: true,
       message: "LoggedIn successfully",
-      data :{
+      data: {
         userId: user._id,
         token,
-      }
-     
+      },
     });
   } catch (error) {
-    
     res.status(500).json({
       success: false,
       message: "Error in login",
