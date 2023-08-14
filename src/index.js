@@ -8,11 +8,11 @@ const userRoutes = require("./Routes/user.routes");
 const videoRoutes = require("./Routes/video.routes");
 
 const app = express();
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
-app.use("/api/v1/auth", userRoutes);
+app.use("/auth", userRoutes);
 app.use("/", videoRoutes);
 
 mongoose
