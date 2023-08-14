@@ -39,7 +39,7 @@ userRoute.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await userModel.findOne({ email });
+    const user = await userModel.findOne({ email : email });
     if (!user) {
       res.status(404).json({
         success: false,
