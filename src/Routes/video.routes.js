@@ -42,7 +42,6 @@ videoRoutes.post(
   "/create/:userId",
   storage.single("video"),
   async (req, res) => {
-    console.log(req.body)
     try {
       const { userId } = req.params;
       const currDate = getDate();
@@ -66,18 +65,11 @@ videoRoutes.post(
         date: currDate,
         postedBy: userId,
       });
-
-      console.log(newVideo);
-
       const savedVideo = await newVideo.save();
-
-      const user = await UserModel.findById(userId);
+      const user = await UserModel.findById({_id : userId});
       if (!user) {
         return res.status(404).json({ error: "User not found in Database" });
       }
-      user.myVideos.unshift(savedVideo._id);
-      await user.save();
-
       return res.status(201).json({ result: savedVideo,status : true });
     } catch (err) {
       console.log(err.message);
